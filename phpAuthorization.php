@@ -343,13 +343,27 @@
       }
     }
     
-    function get_user($id, $items = array()) {
-      if ($id != '' and count($items) != 0) {   
-        $id = $this->mysqli->real_escape_string($id);
+    /**
+     *  This function returns userdata like email that requested in the $items
+     *  array. At least you have to request one data-column - otherwise it does
+     *  not really make sense.
+     *  
+     *  @param string $username - the username to get the data from
+     *  @param array $items - the list including the database-columns 
+     *  @return array - the columns you requested
+     */                                 
+    function get_user($username, $items = array()) {
+      if ($id != '' and count($items) != 0) { 
+      
+        /**
+         *  the security area: real escape the username and the values of the
+         *  property-array.
+         */        
+        $username = $this->mysqli->real_escape_string($username);
         $buffer = array();
         
         foreach ($items as $item) {
-          $buffer[] = '`'.$item.'`';
+          $buffer[] = '`'.$this->mysqli->real_escape_string($item).'`';
         }
         
         $result = $this->mysqli->query('SELECT
@@ -357,9 +371,9 @@
                                         FROM
                                           `'.self::USER_TABLE.'`
                                         WHERE
-                                          `id` = '.$id.';');
+                                          `username` = '.$username.';');
         
-        if ($this->mysqli->affected_rows == 1) {
+        if ($result->num_rows == 1) {
           return $result->fetch_assoc();
         } else {
           return false;
@@ -369,8 +383,19 @@
       }
     }
     
+    /**
+     *  This function deletes a user - should be used carefully but surly you
+     *  know about that irreversible query.
+     *  
+     *  @param string $username - the user you want to delete
+     *  @return bool - tells you if your query was successful
+     */                       
     function delete_user($username) {
       if ($username != '') {
+      
+        /**
+         *  real-escape the username to prevent sql-injections
+         */                 
         $username = $this->mysqli->real_escape_string($username);
         
         $this->mysqli->query('DELETE FROM
@@ -389,11 +414,27 @@
       }
     }
     
+    /**
+     *  user_login() logs a user (specified by $username) in.
+     *  
+     *  @param string $username - the user you want to log in
+     *  @return bool - returns if your login-try was successful
+     */                        
     function user_login($username) {
       if ($username != '') {
+      
+        /**
+         *  real-escape the username to prevent sql-injections
+         */     
         $username = $this->mysqli->real_escape_string($username);
+        
+        /**
+         *  Query the user-record (if one exists), get both username and user-id
+         *  and set it to the $_SESSION variable.
+         */                                            
         $result = $this->mysqli->query('SELECT
-                                          `id`
+                                          `id`,
+                                          `username`
                                         FROM
                                           `'.self::USER_TABLE.'`
                                         WHERE
@@ -402,7 +443,10 @@
           $user = $result->fetch_assoc();
           
           $_SESSION['logged'] = 1;
+          
           $_SESSION['id'] = $user['id'];
+          $_SESSION['username'] = $user['username'];
+          
           $this->user['id'] = $user['id'];
         
           return true;
