@@ -264,7 +264,17 @@
         return false;
       }
     }
-    
+
+    /**
+     *  This function inserts a new user-record to the database. $username and
+     *  $password are at least required to provide a fully working record.
+     *  
+     *  @param string $name - real name
+     *  @param string $username - the username that must be unique
+     *  @param string $password - password for tha account
+     *  @param string $email - a possibility to contact the account-owner
+     *  @return bool - status if the record was inserted correctly
+     */                                                  
     function create_user($name, $username, $password, $email) {
       if ($username != '' and $password != '') {
       
@@ -297,7 +307,7 @@
       }                
     }
     
-    function change_user($username, $change_items = array()) {
+    function modify_user_properties($username, $change_items = array()) {
       if ($username != '' and count($change_items) != 0) {
       
         $username = $this->mysqli->real_escape_string($username);
