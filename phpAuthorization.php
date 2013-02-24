@@ -246,20 +246,12 @@
         $username = $this->mysqli->real_escape_string($username);
         
         $new_password = $this->hash_password($new_password);
+        
         $new_password = $this->mysqli->real_escape_string($new_password);
-        
-        $this->mysqli->query('UPDATE
-                                `'.self::USER_TABLE.'`
-                              SET
-                                `password` = "'.$new_password.'"
-                              WHERE
-                                `username` = "'.$username.'";');
-        
-        if ($this->mysqli->affected_rows == 1) {
-          return true;
-        } else {
-          return false;
-        }
+                        
+        return $this->modify_user_properties($username,
+                                            array('password' => $new_password));
+                                            
       } else {
         return false;
       }
@@ -307,13 +299,26 @@
       }                
     }
     
-    function modify_user_properties($username, $change_items = array()) {
+    /**
+     * modify_user_properties() changes properties like email, password, etc for
+     * you. Put the username in $username and your changes to $properties (use
+     * the key for the db-key you want wo change and the value for your new
+     * value) as an array.
+     * 
+     *  @param string $username - username you want change the properties for  
+     *  @param array $properties - the array of changes
+     */                       
+    function modify_user_properties($username, $properties = array()) {
       if ($username != '' and count($change_items) != 0) {
       
+        /**
+         *  the security area: real escape the username and the keys and values
+         *  of the property-array.
+         */                         
         $username = $this->mysqli->real_escape_string($username);
         $buffer = array();
         
-        foreach ($change_items as $change_key => $change_value) {
+        foreach ($properties as $change_key => $change_value) {
           $buffer[] = '`'.
                         $this->mysqli->real_escape_string($change_key).
                       '` = "'.
@@ -328,8 +333,8 @@
                                         WHERE
                                           `username` = "'.$username.'";');
         
-        if ($result->num_rows == 1) {
-          return $result->fetch_assoc();
+        if ($this->mysqli->affected_rows == 1) {
+          return true;
         } else {
           return false;
         }
