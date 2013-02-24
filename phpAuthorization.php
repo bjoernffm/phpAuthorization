@@ -399,6 +399,11 @@
       }      
     }
     
+    /**
+     *  logs a user out with unsetting the $_SESSION and $user variable
+     *
+     *  @return bool - true because it ever should work
+     */                   
     function user_logout() {
       $_SESSION = array();
       $this->user = array();
