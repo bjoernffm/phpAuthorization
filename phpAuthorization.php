@@ -37,7 +37,7 @@
      *  
      *  @var array
      */                       
-    var $user = array();
+    public $user = array();
     
     /**
      *  this constructor tries to connect via mysqli and stores the hopefully
@@ -99,7 +99,7 @@
      *  @param int $length - the length of the generated password
      *  @return string - the password
      */                            
-    function generate_password($length = 8) {
+    public function generate_password($length = 8) {
     
       $buffer = ''; 
       
@@ -119,7 +119,7 @@
      *       
      *  @return string - the salt with a length of 9
      */                   
-    function generate_salt() {
+    private function generate_salt() {
     
       $buffer = ''; 
       
@@ -146,7 +146,7 @@
      *  @param string $hash_to_compare - a password where to extract the hash
      *  @return string - the encrypted $password
      */                                                      
-    function hash_password($password, $hash_to_compare = false) { 
+    private function hash_password($password, $hash_to_compare = false) { 
       if ($hash_to_compare) {
       
         /**
@@ -172,7 +172,7 @@
      *  @param string $password - the related password
      *  @return bool - true if matching else false     
      */                                        
-    function check_login_data($username, $password) {
+    public function check_login_data($username, $password) {
       if ($username != '' and $password != '') {
       
         /**
@@ -219,7 +219,7 @@
      *  
      *  @return bool - if logged in it returns true else false 
      */                            
-    function check_login_status() {
+    public function check_login_status() {
       if ($_SESSION['logged'] == 1 and $_SESSION['id'] != '') {
         return true;
       } else {
@@ -237,7 +237,7 @@
      *  @param string $new_password - the new password
      *  @return bool - worked pretty fine? true or false
      */                                       
-    function set_new_password($username, $new_password) {
+    public function set_new_password($username, $new_password) {
       if ($username != '' and $new_password != '') {
       
         /**
@@ -267,7 +267,7 @@
      *  @param string $email - a possibility to contact the account-owner
      *  @return bool - status if the record was inserted correctly
      */                                                  
-    function create_user($name, $username, $password, $email) {
+    public function create_user($name, $username, $password, $email) {
       if ($username != '' and $password != '') {
       
         /**
@@ -308,7 +308,7 @@
      *  @param string $username - username you want change the properties for  
      *  @param array $properties - the array of changes
      */                       
-    function modify_user_properties($username, $properties = array()) {
+    public function modify_user_properties($username, $properties = array()) {
       if ($username != '' and count($change_items) != 0) {
       
         /**
@@ -352,7 +352,7 @@
      *  @param array $items - the list including the database-columns 
      *  @return array - the columns you requested
      */                                 
-    function get_user($username, $items = array()) {
+    public function get_user($username, $items = array()) {
       if ($id != '' and count($items) != 0) { 
       
         /**
@@ -390,7 +390,7 @@
      *  @param string $username - the user you want to delete
      *  @return bool - tells you if your query was successful
      */                       
-    function delete_user($username) {
+    public function delete_user($username) {
       if ($username != '') {
       
         /**
@@ -420,7 +420,7 @@
      *  @param string $username - the user you want to log in
      *  @return bool - returns if your login-try was successful
      */                        
-    function user_login($username) {
+    public function user_login($username) {
       if ($username != '') {
       
         /**
@@ -463,7 +463,7 @@
      *
      *  @return bool - true because it ever should work
      */                   
-    function user_logout() {
+    public function user_logout() {
       $_SESSION = array();
       $this->user = array();
       return true;    
